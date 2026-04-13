@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIRROR — AI Behavioral Bias Coach</title>
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo">
+    <div class="logo-gem">🪞</div>
+    <span>MIR<em>ROR</em></span>
+  </div>
+  <div class="tabs">
+    <button class="tab on" onclick="goTab('dash',this)">Dashboard</button>
+    <button class="tab"    onclick="goTab('sim',this)">Trade Simulator</button>
+    <button class="tab"    onclick="goTab('audit',this)">Audit Log</button>
+  </div>
+  <div class="live-badge"><div class="dot"></div>ML ENGINE LIVE</div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="tick"><span class="tick-s">NIFTY50</span><span>22,341</span><span class="tick-d">▼ −1.8%</span></div>
+  <div class="tick"><span class="tick-s">SENSEX</span><span>73,512</span><span class="tick-d">▼ −1.6%</span></div>
+  <div class="tick"><span class="tick-s">RELIANCE</span><span>2,841</span><span class="tick-d">▼ −2.1%</span></div>
+  <div class="tick"><span class="tick-s">TCS</span><span>3,492</span><span class="tick-u">▲ +0.4%</span></div>
+  <div class="tick"><span class="tick-s">INFY</span><span>1,621</span><span class="tick-d">▼ −3.2%</span></div>
+  <div class="tick"><span class="tick-s">HDFC</span><span>1,403</span><span class="tick-u">▲ +0.9%</span></div>
+  <div class="vix-chip mono">⚡ VIX 24.7 — DANGER ZONE</div>
+</div>
+
+<div class="app">
+
+<!-- ══════ DASHBOARD ══════ -->
+<div id="pg-dash" class="pg on">
+  <div class="g3 mb">
+    <div class="card">
+      <div class="cap">Overall Bias Score</div>
+      <div class="ring-wrap">
+        <div class="ring-rel">
+          <svg class="ring-svg" width="120" height="120" id="ring-svg">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg2)" stroke-width="9"/>
+            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--red)" stroke-width="9"
+              stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round"
+              id="ring-circle" style="transition:stroke-dashoffset 1.5s cubic-bezier(.16,1,.3,1)"/>
+          </svg>
+          <div class="ring-inner">
+            <div class="ring-num r" id="ring-num">0</div>
+            <div class="ring-sub">/ 100</div>
+          </div>
+        </div>
+        <div class="ring-label"><b>HIGH RISK</b><br>Action required</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cap">Portfolio Health</div>
+      <div class="sg">
+        <div class="sc"><div class="sl">P&L (MTD)</div><div class="sv r">−₹18,240</div><div class="ss">▼ 6.2% this month</div></div>
+        <div class="sc"><div class="sl">Win Rate</div><div class="sv a">34%</div><div class="ss">24 of 71 trades</div></div>
+        <div class="sc"><div class="sl">Avg Hold</div><div class="sv p">2.1d</div><div class="ss">vs 8.4d optimal</div></div>
+        <div class="sc"><div class="sl">Biased Trades</div><div class="sv r">67%</div><div class="ss">48 of 71 trades</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cap">Live Anomaly Alerts</div>
+      <div class="alert-stack">
+        <div class="alert-box danger">
+          <div class="alert-title r">⚠ PANIC PATTERN DETECTED</div>
+          <div class="alert-body">Trade frequency <b>3.2× baseline</b>. VIX at 24.7. This matches your panic profile from Mar 28.</div>
+        </div>
+        <div class="alert-box warn">
+          <div class="alert-title a">📊 ISOLATION FOREST FLAG</div>
+          <div class="alert-body">Deviation score: <b>0.84</b> (threshold 0.60). Significant behavioral anomaly in current session.</div>
+        </div>
+        <div class="alert-box info">
+          <div class="alert-title" style="color:var(--blue)">💡 MIRROR RECOMMENDS</div>
+          <div class="alert-body">Pause for 24h. Your last 3 panic sessions averaged <b>−₹6,200</b> each.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="cap">Bias Radar Profile</div>
+      <canvas id="radar" width="460" height="240"></canvas>
+    </div>
+    <div class="card">
+      <div class="cap">Bias Breakdown</div>
+      <div class="blist">
+        <div class="brow">
+          <div class="bhdr"><span class="bn">Panic Selling</span><span class="bs r" id="bv-0">0%</span></div>
+          <div class="bg_"><div class="bf" id="bb-0" style="width:0%;background:var(--red)"></div></div>
+        </div>
+        <div class="brow">
+          <div class="bhdr"><span class="bn">FOMO Buying</span><span class="bs a" id="bv-1">0%</span></div>
+          <div class="bg_"><div class="bf" id="bb-1" style="width:0%;background:var(--amber)"></div></div>
+        </div>
+        <div class="brow">
+          <div class="bhdr"><span class="bn">Disposition Effect</span><span class="bs a" id="bv-2">0%</span></div>
+          <div class="bg_"><div class="bf" id="bb-2" style="width:0%;background:var(--amber)"></div></div>
+        </div>
+        <div class="brow">
+          <div class="bhdr"><span class="bn">Overtrading</span><span class="bs p" id="bv-3">0%</span></div>
+          <div class="bg_"><div class="bf" id="bb-3" style="width:0%;background:var(--purple)"></div></div>
+        </div>
+        <div class="brow">
+          <div class="bhdr"><span class="bn">Recency Bias</span><span class="bs g" id="bv-4">0%</span></div>
+          <div class="bg_"><div class="bf" id="bb-4" style="width:0%;background:var(--green)"></div></div>
+        </div>
+      </div>
+      <div class="anom-meter">
+        <span class="anom-label">ISOLATION FOREST SCORE</span>
+        <div class="anom-bar-bg"><div class="anom-bar-fill" id="anom-fill" style="width:0%;background:var(--blue)"></div></div>
+        <span class="anom-val" id="anom-val">0.00</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SIMULATOR ══════ -->
+<div id="pg-sim" class="pg">
+  <div class="g2">
+    <div>
+      <div class="card mb">
+        <div class="cap">Trade Simulator — BiasBrake Engine</div>
+        <div class="vix-bar">
+          <span class="lbl">INDIA VIX</span>
+          <span class="val">24.7</span>
+          <span class="warn">⚠ ELEVATED — Panic-sell risk: HIGH</span>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label class="fl">Stock</label>
+            <select class="fs" id="st">
+              <option value="INFY">INFY — Infosys</option>
+              <option value="RELIANCE">RELIANCE — Reliance</option>
+              <option value="TCS">TCS — Tata Consultancy</option>
+              <option value="HDFC">HDFC Bank</option>
+              <option value="BAJFINANCE">BAJFINANCE</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="fl">Qty</label>
+            <input class="fi" id="qty" type="number" value="50" min="1"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label class="fl">Market Scenario</label>
+            <select class="fs" id="sc">
+              <option value="crash">Market Crash (−3.2% today, VIX high)</option>
+              <option value="spike">Stock up +22% in 5 days</option>
+              <option value="normal">Normal market conditions</option>
+            </select>
+          </div>
+        </div>
+        <div class="trade-btns">
+          <button class="tb sell" onclick="analyze('SELL')">⬇  PLACE SELL ORDER</button>
+          <button class="tb buy"  onclick="analyze('BUY')">⬆  PLACE BUY ORDER</button>
+        </div>
+        <div id="bb-zone"></div>
+      </div>
+      <div class="card">
+        <div class="cap">🧠 Claude AI — Behavioral Analysis</div>
+        <div class="expl-box" id="expl">
+          <span style="color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:12px;">Place a trade above to trigger AI-powered coaching...</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card mb">
+        <div class="cap">What-If Simulator — Backtested Outcomes</div>
+        <canvas id="wi" width="490" height="185"></canvas>
+        <div class="wi-cards">
+          <div class="wi-card bad">
+            <div class="wi-lbl">IF SOLD (Panic)</div>
+            <div class="wi-val r" id="wi-bad">−₹8,420</div>
+            <div class="wi-sub">Locked in loss, missed rally</div>
+          </div>
+          <div class="wi-card good">
+            <div class="wi-lbl">IF HELD (Rational)</div>
+            <div class="wi-val g" id="wi-good">+₹3,180</div>
+            <div class="wi-sub">Avg 18-day recovery: +12.4%</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cap">Your Bias Pattern — Recent Trades</div>
+        <div class="hlist">
+          <div class="hi biased"><div class="hs">INFY</div><div class="ha">SELL 40</div><div class="hb pk">PANIC SELL</div><div class="ho r">−₹4,200</div></div>
+          <div class="hi biased"><div class="hs">BAJFINANCE</div><div class="ha">BUY 20</div><div class="hb fm">FOMO BUY</div><div class="ho r">−₹2,800</div></div>
+          <div class="hi rational"><div class="hs">TCS</div><div class="ha">HOLD</div><div class="hb ok">RATIONAL</div><div class="ho g">+₹6,100</div></div>
+          <div class="hi biased"><div class="hs">RELIANCE</div><div class="ha">SELL 100</div><div class="hb pk">PANIC SELL</div><div class="ho r">−₹9,600</div></div>
+          <div class="hi biased"><div class="hs">HDFC</div><div class="ha">BUY 30</div><div class="hb fm">FOMO BUY</div><div class="ho r">−₹1,400</div></div>
+          <div class="hi rational"><div class="hs">NIFTY ETF</div><div class="ha">BUY 50</div><div class="hb ok">RATIONAL</div><div class="ho g">+₹3,800</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ AUDIT LOG ══════ -->
+<div id="pg-audit" class="pg">
+  <div class="card">
+    <div class="cap">Behavioral Audit Log — Full History</div>
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>DATE</th><th>STOCK</th><th>ACTION</th><th>QTY</th>
+            <th>BIAS DETECTED</th><th>ANOMALY SCORE</th><th>OUTCOME</th><th>DECISION</th>
+          </tr>
+        </thead>
+        <tbody id="atbl"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- app -->
+
+<script src="app.js"></script>
+</body>
+</html>
