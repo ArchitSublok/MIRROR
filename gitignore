@@ -1,1 +1,17 @@
+# API Keys — NEVER commit these
+src/config.js
 
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
