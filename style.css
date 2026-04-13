@@ -1,0 +1,15 @@
+/* Variables & Imports */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #07080f;
+  --red: #ff3b5c;
+  --green: #00e5a0;
+  /* ... rest of your variables ... */
+}
+
+/* Global Styles */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--text); }
+
+/* ... Paste the rest of your CSS here ... */
